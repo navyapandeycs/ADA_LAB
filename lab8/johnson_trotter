@@ -1,66 +1,91 @@
-#include<stdio.h>
+#include <stdio.h>
+
 int n, a[10], d[10];
 
-void print(){
-    for(int i =0;i<n;i++){
+void print() {
+    for (int i = 0; i < n; i++) {
         printf("%d ", a[i]);
     }
     printf("\n");
 }
 
-int mobile(){
-    int pos=-1, m=0;
+int mobile() {
+    int pos = -1, m = 0;
 
-    for(int i =0;i<n;i++){
-        if(d[i]==-1 && i>0 && a[i]>a[i-1] && a[i]>m){
-            pos= i;
-            m= a[i];
+    for (int i = 0; i < n; i++) {
+
+        // Moving left
+        if (d[i] == -1 && i > 0 &&
+            a[i] > a[i - 1] &&
+            a[i] > m) {
+
+            pos = i;
+            m = a[i];
         }
-        if(d[i]==1 && i<n-1 && a[i]>a[i+1] && a[i] >m){
-            pos =i;
-            m=a[i];
+
+        // Moving right
+        if (d[i] == 1 && i < n - 1 &&
+            a[i] > a[i + 1] &&
+            a[i] > m) {
+
+            pos = i;
+            m = a[i];
         }
     }
+
     return pos;
 }
 
-int main(){
+void moveElement(int p, int q) {
+    int temp;
+
+    // Swap elements
+    temp = a[p];
+    a[p] = a[q];
+    a[q] = temp;
+
+    // Swap directions
+    temp = d[p];
+    d[p] = d[q];
+    d[q] = temp;
+}
+
+int main() {
 
     printf("Enter the value of n : ");
     scanf("%d", &n);
 
-    for(int i =0;i<n;i++){
-        a[i] = i+1;
-        d[i] = -1;
+    // Initialize permutation and directions
+    for (int i = 0; i < n; i++) {
+        a[i] = i + 1;
+        d[i] = -1;      // all initially move left
     }
 
-    print(); 
+    print();
 
-    while(1){
-        int p=mobile();
-        if(p==-1){
+    while (1) {
+
+        int p = mobile();
+
+        if (p == -1) {
             break;
         }
 
-        int q = p+d[p];
-        //swap logic
-        int t = a[p];
-        a[p] = a[q];
-        a[q] = t;
+        int q = p + d[p];
 
-        //similarly
-        int i = d[p];
-        d[p] = d[q];
-        d[q] = i;
+        moveElement(p, q);
 
         int m = a[q];
 
-        for(int i =0;i<n;i++){
-            if(a[i]>m){
+        // Reverse directions of elements larger than m
+        for (int i = 0; i < n; i++) {
+            if (a[i] > m) {
                 d[i] = -d[i];
             }
         }
+
         print();
     }
+
     return 0;
 }
